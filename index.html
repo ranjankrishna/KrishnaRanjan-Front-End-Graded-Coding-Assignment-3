@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment 3 on Typing Speed</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div class="mainDiv">
+        <div class="centerDiv">
+            <h1>Test Your Typing Speed</h1>
+            <h2 id="msg"></h2>
+            <br>
+            <textarea id="myWords" cols="100" rows="20" placeholder="Start Typing Here..."></textarea>
+            <br>
+            <button id="button" class="mainButton">Click here to Start Your Test</button>
+        </div>
+        <div class="resultsDiv">
+            <button id="wpmButton" class="WPM">WPM</button>
+            <button id="cpmButton" class="CPM">CPM</button>
+            <button id="errButton" class="error">Error</button>
+            <button id="timeButton" class="time">Time 60s</button>
+            <button id="accButton" class="accuracy">Accuracy %</button>
+        </div>
+    </div>
+    <script>
+        const msg = document.getElementById('msg');
+        const typeWords = document.getElementById('myWords');
+        const button = document.getElementById('button');
+        const errButton = document.getElementById('errButton');
+        const timeButton = document.getElementById('timeButton');
+        const accButton = document.getElementById('accButton');
+        const wordsPerMinute = document.getElementById('wpmButton');
+        const charPerMinute = document.getElementById('cpmButton');
+
+        const wordsToType = ["India, officially the Republic of India,is a country in South Asia.",
+            "India is the seventh-largest country by area, the second-most populous country, and the most populous democracy in the world.",
+            "India is bounded by the Indian Ocean on the south, the Arabian Sea on the southwest, and the Bay of Bengal on the southeast, it shares land borders with Pakistan to the west;[f] China, Nepal, and Bhutan to the north; and Bangladesh and Myanmar to the east.",
+            "In the Indian Ocean, India is in the vicinity of Sri Lanka and the Maldives; its Andaman and Nicobar Islands share a maritime border with Thailand, Myanmar and Indonesia."];
+        let startTime, endTime;
+
+        const startWriteText = () => {
+            let randomNumber = Math.floor(Math.random() * wordsToType.length);
+            msg.innerText = wordsToType[randomNumber];
+            let date = new Date();
+            startTime = date.getTime();
+            button.innerText = "Done, Check Your Score";
+        }
+
+
+        const countWords = (str) => {
+            let countWords = str.split(" ").length;
+            return countWords;
+            console.log("countWords:", countWords);
+        }
+
+
+
+        const endWriteText = () => {
+            let date = new Date();
+            endTime = date.getTime();
+            let totalTime = ((endTime - startTime) / 1000);
+            timeButton.innerText = "Time" + totalTime;
+            if (totalTime > 60) {
+                button.innerText = "Click here to Start Your Test";
+            }
+            let totalString = typeWords.value;
+            console.log(totalString);
+            let wordCount = Number(countWords(totalString));
+            console.log("wordcount:", wordCount);
+            if (wordCount > 1) {
+                let speed = Math.floor((wordCount / totalTime) * 60);
+                wordsPerMinute.innerText = "WPM - " + speed;
+            }
+            let cpmSpeed = Math.floor((wordCount.length / totalTime) * 60);
+            let countString = countCharInString(totalString, totalTime);
+            let compareString = compareText(msg.innerText, totalString);
+            totalTime = '';
+            wordCount = '';
+            speed = '';
+            cpmSpeed = '';
+            startTime = '';
+            endTime = '';
+        }
+
+        const countCharInString = (String, totalTime) => {
+            let cpmSpeed = Math.floor((String.length / totalTime) * 60);
+            charPerMinute.innerText = "CPM - " + cpmSpeed;
+        }
+        const compareText = (string1, string2) => {
+            let wordsInString1 = string1.split(" ");
+
+            let wordsInString2 = string2.split(" ");
+            let matchingWords = 0;
+            let errorWords = 0;
+
+            wordsInString2.forEach(function (item, index) {
+                if (item == wordsInString1[index]) {
+                    matchingWords++;
+                } else {
+                    errorWords++;
+                }
+            }
+
+            )
+
+            errButton.innerText = "Error                                 " + errorWords;
+            accuracy = Math.floor((matchingWords / (errorWords + matchingWords)) * 100);
+            accButton.innerText = "Accuracy %" + accuracy;
+            ;
+            errorWords = '';
+        }
+
+        button.addEventListener('click', function () {
+
+            if (this.innerText == 'Click here to Start Your Test') {
+                wordsPerMinute.innerText = "WPM";
+                charPerMinute.innerText = "CPM";
+                accButton.innerText = "Accuracy %";
+                timeButton.innerText = "Time 60s";
+                errButton.innerText = "Error";
+                typeWords.value = '';
+                typeWords.disabled = false;
+                startWriteText();
+            } else if (this.innerText == "Done, Check Your Score") {
+                typeWords.disabled = true;
+                endWriteText();
+                button.innerText = "Click here to Start Your Test";
+
+            }
+        })
+
+
+    </script>
+</body>
+
+</html>
